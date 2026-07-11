@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StreamView - Professional Monitoring</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#1b1c1c",
+                    "primary-container": "#3f51b5",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed": "#281900",
+                    "primary-fixed": "#dee0ff",
+                    "secondary-fixed": "#cfe6f2",
+                    "surface-container-highest": "#353535",
+                    "on-background": "#e5e2e1",
+                    "error": "#ffb4ab",
+                    "tertiary-fixed-dim": "#ffba38",
+                    "outline": "#8f909e",
+                    "error-container": "#93000a",
+                    "tertiary-fixed": "#ffdeac",
+                    "on-tertiary": "#432c00",
+                    "on-secondary": "#1e333c",
+                    "inverse-primary": "#4355b9",
+                    "inverse-on-surface": "#303030",
+                    "inverse-surface": "#e5e2e1",
+                    "on-primary-fixed-variant": "#293ca0",
+                    "on-tertiary-container": "#ffc971",
+                    "on-secondary-container": "#a6bcc7",
+                    "on-secondary-fixed": "#071e27",
+                    "surface-container": "#202020",
+                    "secondary": "#b4cad6",
+                    "surface-variant": "#353535",
+                    "on-primary": "#08218a",
+                    "tertiary": "#ffba38",
+                    "on-primary-container": "#cacfff",
+                    "on-surface-variant": "#c5c5d4",
+                    "primary-fixed-dim": "#bac3ff",
+                    "on-primary-fixed": "#00105c",
+                    "secondary-fixed-dim": "#b4cad6",
+                    "tertiary-container": "#795300",
+                    "surface-dim": "#131313",
+                    "surface": "#131313",
+                    "secondary-container": "#374c56",
+                    "on-surface": "#e5e2e1",
+                    "on-secondary-fixed-variant": "#354a53",
+                    "surface-bright": "#393939",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-error-container": "#ffdad6",
+                    "outline-variant": "#454652",
+                    "primary": "#bac3ff",
+                    "surface-container-high": "#2a2a2a",
+                    "on-tertiary-fixed-variant": "#604100",
+                    "surface-tint": "#bac3ff",
+                    "background": "#131313"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "lg": "24px",
+                    "xl": "32px",
+                    "sm": "8px",
+                    "gutter": "16px",
+                    "md": "16px",
+                    "base": "4px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "title-md-mobile": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "title-md": ["Inter"],
+                    "label-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "title-md-mobile": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .stream-card-hover:hover .thumbnail-overlay { opacity: 1; }
+        .thumbnail-overlay { opacity: 0; transition: opacity 0.3s ease; }
+        
+        /* Shimmer Effect for potential loading states */
+        .shimmer {
+            background: linear-gradient(90deg, #202020 25%, #2a2a2a 50%, #202020 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="bg-surface-container text-primary font-title-lg text-title-lg-mobile md:font-title-lg md:text-title-lg docked full-width top-0 border-b border-outline-variant/20 shadow-sm flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 w-full z-40 fixed">
+<div class="flex items-center gap-4">
+<button class="hover:bg-primary/10 transition-colors active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile text-on-surface dark:text-on-surface tracking-tight">StreamView</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="hover:bg-primary/10 transition-colors active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="hover:bg-primary/10 transition-colors active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
+<!-- Welcome Section -->
+<div class="mb-8">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Active Streams</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Monitoring 6 locations in real-time</p>
+</div>
+<!-- Stream Grid (Vertical List logic applied as reflowing cards) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+<!-- StreamCard 1 -->
+<div class="flex flex-col gap-sm group stream-card-hover cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="A professional security camera view of a modern glass-walled office front entrance at dusk. The lighting is cold and crisp, emphasizing the architectural lines of the building. The image has a slight high-tech surveillance overlay with a digital clock and grid lines. The primary colors are deep indigos and muted slates." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzDnycWs6FA6Iv4IKcCLrp7JNjPhp6NrwTwd5gFv8lijEe_Dozlb_KgxumQ57Vi6ZNA3zcFNv8b1JkYLzuqH3GhBEGD-3rQIthc3qLFhuq7GkF8xTh5qYjzKHx-IAnHlEuChPqxMnqUiyXDrGyLqYzDbAi9oWFCbmKX-G23oQhp4TYwKitXtmE-RDuQlrtYuhWC6kftGqBEUfektHbMShpfincojRuosqP2p0Gwp6tq9woB58TT0AsTw"/>
+<!-- StatusPill -->
+<div class="absolute top-sm right-sm flex items-center gap-xs bg-black/60 backdrop-blur-md px-2 py-1 rounded-full h-[24px]">
+<div class="w-2 h-2 rounded-full bg-[#4CAF50]"></div>
+<span class="font-label-sm text-label-sm text-white uppercase tracking-wider">Connected</span>
+</div>
+<!-- Hover Overlay Controls -->
+<div class="thumbnail-overlay absolute inset-0 bg-black/40 flex items-center justify-center gap-4">
+<span class="material-symbols-outlined text-white text-4xl">play_circle</span>
+</div>
+</div>
+<div class="flex justify-between items-start mt-1">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Front Entrance</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">1080p • 60fps • Cam 01</p>
+</div>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- StreamCard 2 -->
+<div class="flex flex-col gap-sm group stream-card-hover cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="A high-angle interior shot of a minimalist luxury hotel lobby with polished marble floors and designer seating. The space is illuminated by soft, recessed warm lights that contrast with the technical cool tones of the monitoring interface. The aesthetic is clean, professional, and corporate, featuring a palette of charcoal, white, and subtle indigo accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzfYJCmD_1IIwcBa-1mOeYCPQ9kt-JfM9Wly9a_2zPdOlCEjVpnEytCltrIhVUoEaprHChTOrt2egj3Ps-F5C-O2VJVDOfcxxHoZ0rf4fNX4pzEncP47ayYPk8_DQC-uMx_4h0mpLBmRix368ONcy0-bo3qegd2fFPB2XLyBGvQQTDY7ihAHaB2_a_IVB561VZeEq67H3rQ4sudA-3JpIgfcqgls9L4a2iyJ8MVGgwXAPuiMh_WY-SbQ"/>
+<div class="absolute top-sm right-sm flex items-center gap-xs bg-black/60 backdrop-blur-md px-2 py-1 rounded-full h-[24px]">
+<div class="w-2 h-2 rounded-full bg-[#4CAF50]"></div>
+<span class="font-label-sm text-label-sm text-white uppercase tracking-wider">Connected</span>
+</div>
+<div class="thumbnail-overlay absolute inset-0 bg-black/40 flex items-center justify-center gap-4">
+<span class="material-symbols-outlined text-white text-4xl">play_circle</span>
+</div>
+</div>
+<div class="flex justify-between items-start mt-1">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Main Lobby</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">4K • 30fps • Cam 04</p>
+</div>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- StreamCard 3 -->
+<div class="flex flex-col gap-sm group stream-card-hover cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Wide angle surveillance view of a modern underground parking garage with numbered pillars and white floor markings. Bright fluorescent lights create a clinical, high-contrast environment. The image feels secure and technologically monitored, utilizing deep shadows and bright highlight areas. Colors are dominated by cool grays and deep blues." src="https://lh3.googleusercontent.com/aida-public/AB6AXuByl897wF74bhyfICz3Y8009rV3vuLhLJIN0QdNmOnnIe3QbrUotNTMGp474mCO3vroIfSs1DVz7roctH5pGg9sDo1C4aLlO-d4HrqjuOGz2OtUAp6bkB825Cdv7htmdJHqFKjDUaSqv5ZACb_mpKQbNj2AaIBSN1X6OFwyYlCjF8X9afpF0byhdflbM4BtX8DlpSdUVutCKMIk12W2wjFODaRoliFh_ymoPr_qEaHL57qxzE-3zNeeDQ"/>
+<div class="absolute top-sm right-sm flex items-center gap-xs bg-black/60 backdrop-blur-md px-2 py-1 rounded-full h-[24px]">
+<div class="w-2 h-2 rounded-full bg-[#4CAF50]"></div>
+<span class="font-label-sm text-label-sm text-white uppercase tracking-wider">Connected</span>
+</div>
+<div class="thumbnail-overlay absolute inset-0 bg-black/40 flex items-center justify-center gap-4">
+<span class="material-symbols-outlined text-white text-4xl">play_circle</span>
+</div>
+</div>
+<div class="flex justify-between items-start mt-1">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Parking Level B1</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">1080p • 24fps • Cam 12</p>
+</div>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- StreamCard 4 -->
+<div class="flex flex-col gap-sm group stream-card-hover cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Interior monitoring view of a high-tech server room with glowing blue LED indicator lights on dark server racks. The perspective is from a low-angle security camera. The lighting is moody and dark, focusing on the technical hardware. The color scheme is almost monochromatic dark indigo with bright cyan light points." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDdQxDVYbecgdwtBkvZMWOlZUlTsd8W1m0nwy38dYgrw9CwobtmIFOcmat5Swk9pPnZQZcs-guhThJKRkwxaxHFUoWed9vN2utnWZoJzmK-GoJ5svTfIFmLQ0c0Q2MtrjRd7hMGhundn-j2C32p1bgcwrQvg75MNehEZImkDiajzq_410FGNSVOD0XzrCxNjsp0QZxNL4mr2zhnffCcTh57pVjeo7jJ8gouwI33S7C_8keug9_Vs4fOA"/>
+<div class="absolute top-sm right-sm flex items-center gap-xs bg-black/60 backdrop-blur-md px-2 py-1 rounded-full h-[24px]">
+<div class="w-2 h-2 rounded-full bg-[#4CAF50]"></div>
+<span class="font-label-sm text-label-sm text-white uppercase tracking-wider">Connected</span>
+</div>
+<div class="thumbnail-overlay absolute inset-0 bg-black/40 flex items-center justify-center gap-4">
+<span class="material-symbols-outlined text-white text-4xl">play_circle</span>
+</div>
+</div>
+<div class="flex justify-between items-start mt-1">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Server Room</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">720p • 60fps • Cam 08</p>
+</div>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- StreamCard 5 -->
+<div class="flex flex-col gap-sm group stream-card-hover cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Elevated security camera view of an outdoor modern corporate courtyard with manicured gardens and geometric stone paths. The scene is captured during a bright midday with sharp, clear sunlight and deep shadows. The architectural aesthetic is sleek and corporate, with a professional color palette of greens, grays, and deep navy accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC8ZxQPp7MU40iHR1tIvlWpZWw6dKrWVr5jshfhmoSAWrxQ1hvm-cY4kTx8i20Zti1c4dY_IuTBQYGtLBeOYhX2TIpWkmHserxePXlHujrs8jNu_qQ1GGKLEps_1VY-DYs6b4sPbF2i42zg_cAGpfG_0-EmoYDR1bjhnu_Ka7i5aHjvI9DnfwEkKmKHfojXN6oKu4slENDU3zupPKx8U8GkSx2KzmvMA5HN74k5j9RvfcI7Fv2zeZdYg"/>
+<div class="absolute top-sm right-sm flex items-center gap-xs bg-black/60 backdrop-blur-md px-2 py-1 rounded-full h-[24px]">
+<div class="w-2 h-2 rounded-full bg-[#4CAF50]"></div>
+<span class="font-label-sm text-label-sm text-white uppercase tracking-wider">Connected</span>
+</div>
+<div class="thumbnail-overlay absolute inset-0 bg-black/40 flex items-center justify-center gap-4">
+<span class="material-symbols-outlined text-white text-4xl">play_circle</span>
+</div>
+</div>
+<div class="flex justify-between items-start mt-1">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">North Courtyard</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">1080p • 30fps • Cam 02</p>
+</div>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- StreamCard 6 (Offline State example) -->
+<div class="flex flex-col gap-sm group stream-card-hover cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden bg-surface-container-highest">
+<div class="w-full h-full flex flex-col items-center justify-center bg-surface-container-highest">
+<span class="material-symbols-outlined text-outline text-5xl mb-2">videocam_off</span>
+<span class="font-label-lg text-label-lg text-outline">Signal Lost</span>
+</div>
+<div class="absolute top-sm right-sm flex items-center gap-xs bg-black/60 backdrop-blur-md px-2 py-1 rounded-full h-[24px]">
+<div class="w-2 h-2 rounded-full bg-[#B0BEC5]"></div>
+<span class="font-label-sm text-label-sm text-white uppercase tracking-wider">Disconnected</span>
+</div>
+</div>
+<div class="flex justify-between items-start mt-1">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">West Gate</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Retry in 12s • Cam 09</p>
+</div>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Navigation Shell (BottomNavBar for Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-gutter bg-surface-container-low font-label-sm text-label-sm">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 active:scale-90 duration-150 transition-all" href="#">
+<span class="material-symbols-outlined">videocam</span>
+<span>Streams</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary active:scale-90 duration-150 transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+<span>History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary active:scale-90 duration-150 transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<!-- Side Navigation (Desktop Drawer) -->
+<aside class="hidden md:flex fixed inset-y-0 left-0 z-[60] flex flex-col py-margin-desktop bg-surface dark:bg-surface h-full w-80 rounded-r-xl bg-surface-container-low shadow-lg font-body-md text-body-md -translate-x-full lg:translate-x-0 transition-transform duration-300">
+<div class="px-6 mb-8 flex flex-col items-start">
+<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container mb-4">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-primary">Admin Console</span>
+<span class="text-on-surface-variant text-label-sm">Operator #402</span>
+</div>
+<div class="mt-2 flex items-center gap-2 px-2 py-0.5 rounded bg-green-500/10 text-green-500 text-[10px] font-bold uppercase">
+<span class="w-1 h-1 rounded-full bg-green-500"></span> Connected
+            </div>
+</div>
+<div class="flex flex-col gap-1">
+<a class="bg-secondary-container text-on-secondary-container font-bold rounded-full mx-3 px-4 py-3 flex items-center gap-4 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>All Streams</span>
+</a>
+<a class="text-on-surface-variant mx-3 px-4 py-3 flex items-center gap-4 hover:bg-surface-variant/50 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">star</span>
+<span>Favorites</span>
+</a>
+<a class="text-on-surface-variant mx-3 px-4 py-3 flex items-center gap-4 hover:bg-surface-variant/50 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">schedule</span>
+<span>Recent</span>
+</a>
+<a class="text-on-surface-variant mx-3 px-4 py-3 flex items-center gap-4 hover:bg-surface-variant/50 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">build</span>
+<span>Maintenance</span>
+</a>
+</div>
+<div class="mt-auto px-6 pt-4 border-t border-outline-variant/20">
+<div class="bg-surface-container-highest p-4 rounded-xl">
+<div class="flex justify-between items-center mb-2">
+<span class="text-label-sm font-bold text-on-surface">STORAGE</span>
+<span class="text-label-sm text-primary">82%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 82%"></div>
+</div>
+<p class="text-[10px] text-on-surface-variant mt-2 leading-tight">Retention period: 30 days remaining on current plan.</p>
+</div>
+</div>
+</aside>
+<!-- FAB for adding new streams -->
+<button class="fixed bottom-24 right-margin-mobile md:bottom-margin-desktop md:right-margin-desktop w-14 h-14 bg-primary-container text-on-primary-container rounded-2xl shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center z-50">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<script>
+        // Simple micro-interactions
+        document.querySelectorAll('.stream-card-hover').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+                card.style.transition = 'transform 0.2s ease-out';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Search interaction simulation
+        const searchBtn = document.querySelector('header .material-symbols-outlined:last-child');
+        if(searchBtn) {
+            searchBtn.parentElement.addEventListener('click', () => {
+                console.log('Search expanded');
+                // Could toggle a search modal here
+            });
+        }
+    </script>
+</body></html>

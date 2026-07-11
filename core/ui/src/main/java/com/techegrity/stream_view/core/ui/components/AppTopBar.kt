@@ -43,11 +43,10 @@ fun AppTopBar(
     onSearchClear: () -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
-    val mutedStroke = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+    val mutedStroke = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)
 
     TopAppBar(
-        modifier = modifier
-            .border(width = 1.dp, color = mutedStroke),
+        modifier = modifier.border(width = 1.dp, color = mutedStroke),
         title = {
             if (searchExpanded && onSearchToggle != null) {
                 TextField(
@@ -91,7 +90,8 @@ fun AppTopBar(
             } else {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
         },
@@ -120,7 +120,6 @@ fun AppTopBar(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            // Level 2 surface elevation
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
             navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
