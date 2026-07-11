@@ -79,10 +79,6 @@ val OnSurfaceVariantLight = Color(0xFF454652)
 val OutlineLight = Color(0xFF767680)
 val OutlineVariantLight = Color(0xFFC5C5D4)
 
-// Semantic status (outside Material scheme)
-val StatusConnected = Color(0xFF4CAF50)
-val StatusDisconnected = Color(0xFFB0BEC5)
-
 // Player overlay
 val PlayerOverlay = Color(0x99000000) // 60% black
 val PlayerScrubTrack = Color(0xFFB0BEC5)

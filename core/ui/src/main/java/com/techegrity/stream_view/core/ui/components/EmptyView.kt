@@ -15,11 +15,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.techegrity.stream_view.core.ui.R
 import com.techegrity.stream_view.core.ui.theme.StreamViewSpacing
 import com.techegrity.stream_view.core.ui.theme.StreamViewTheme
+import com.techegrity.stream_view.core.ui.theme.UiConstants
 
 @Composable
 fun EmptyView(
@@ -37,7 +40,7 @@ fun EmptyView(
         Icon(
             imageVector = Icons.Outlined.VideocamOff,
             contentDescription = null,
-            modifier = Modifier.size(64.dp),
+            modifier = Modifier.size(UiConstants.EMPTY_ICON_SIZE_DP.dp),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         if (title != null) {
@@ -64,8 +67,8 @@ fun EmptyView(
 private fun EmptyViewPreview() {
     StreamViewTheme(darkTheme = true) {
         EmptyView(
-            title = "No streams found",
-            message = "Try a different search term.",
+            title = stringResource(R.string.preview_empty_title),
+            message = stringResource(R.string.preview_empty_message),
         )
     }
 }
