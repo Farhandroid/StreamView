@@ -24,7 +24,6 @@ object StreamCatalogConstants {
     const val ID_LOREM_BUNNY = "lorem-bunny"
     const val ID_LOREM_CAT = "lorem-cat"
     const val ID_LOREM_CORGI = "lorem-corgi"
-    const val ID_OFFLINE_DEMO = "offline-demo"
 
     const val PROVIDER_APPLE = "Apple"
     const val PROVIDER_MUX = "Mux"
@@ -34,8 +33,11 @@ object StreamCatalogConstants {
     const val PROVIDER_JW = "JW Player"
     const val PROVIDER_NASA = "NASA"
     const val PROVIDER_LOREM = "lorem.video"
-    const val PROVIDER_DEMO = "Demo"
     const val PROVIDER_USER = "Custom"
+
+    const val USER_STREAM_ID_PREFIX = "user-"
+    const val VALIDATION_NAME_REQUIRED = "Name is required"
+    const val VALIDATION_URL_REQUIRED = "Stream URL is required"
 
     const val META_USER_ADDED = "User added • HLS"
 
@@ -56,7 +58,6 @@ object StreamCatalogConstants {
     const val NAME_LOREM_BUNNY = "Lorem Bunny"
     const val NAME_LOREM_CAT = "Lorem Cat"
     const val NAME_LOREM_CORGI = "Lorem Corgi"
-    const val NAME_OFFLINE_DEMO = "Offline Demo Feed"
 
     const val META_VOD_ABR_FMP4 = "VOD • ABR • fMP4"
     const val META_VOD_HEVC = "VOD • HEVC • advanced"
@@ -70,7 +71,6 @@ object StreamCatalogConstants {
     const val META_LIVE_HLS = "Live • HLS"
     const val META_LIVE_PUBLIC = "Live • public feed"
     const val META_PLACEHOLDER = "Placeholder • HLS"
-    const val META_DISCONNECTED = "Disconnected • Signal Lost"
 
     fun thumbnailUrl(seed: String): String =
         "https://picsum.photos/seed/$seed/$THUMBNAIL_WIDTH/$THUMBNAIL_HEIGHT"

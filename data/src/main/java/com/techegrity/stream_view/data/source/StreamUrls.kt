@@ -29,5 +29,8 @@ object StreamUrls {
     const val LOREM_BUNNY = "https://lorem.video/hls/bunny"
     const val LOREM_CAT = "https://lorem.video/hls/cat"
     const val LOREM_CORGI = "https://lorem.video/hls/corgi"
-    const val OFFLINE_DEMO = "https://example.invalid/offline.m3u8"
+
+    /** Official NASA image used when the public NASA TV HLS variants are offline. */
+    const val NASA_TV_THUMBNAIL =
+        "https://images-assets.nasa.gov/image/NHQ201905310019/NHQ201905310019~medium.jpg"
 }

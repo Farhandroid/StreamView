@@ -5,7 +5,6 @@ data class Stream(
     val name: String,
     val thumbnailUrl: String,
     val streamUrl: String,
-    val isConnected: Boolean,
     val provider: String,
     val metadata: String,
 )

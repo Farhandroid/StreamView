@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">StreamView</string>
-    <string name="toast_player_coming_next">Player coming next: %1$s</string>
 </resources>

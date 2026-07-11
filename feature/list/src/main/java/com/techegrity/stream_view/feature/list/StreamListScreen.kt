@@ -161,7 +161,7 @@ private fun StreamListContent(
             StreamCard(
                 name = stream.name,
                 streamUrl = stream.streamUrl,
-                isConnected = stream.isConnected,
+                thumbnailUrl = stream.thumbnailUrl,
                 metadata = stringResource(
                     R.string.stream_metadata_format,
                     stream.provider,
@@ -178,19 +178,7 @@ private fun StreamListContent(
 private fun StreamListScreenPreview() {
     StreamViewTheme(darkTheme = true) {
         StreamListScreen(
-            state = StreamListState(
-                streams = listOf(
-                    Stream(
-                        id = "mux-bbb",
-                        name = "Mux Big Buck Bunny",
-                        thumbnailUrl = "",
-                        streamUrl = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-                        isConnected = true,
-                        provider = "Mux",
-                        metadata = "VOD",
-                    ),
-                ),
-            ),
+            state = StreamListState(),
             onIntent = {},
         )
     }
