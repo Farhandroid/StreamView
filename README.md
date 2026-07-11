@@ -15,6 +15,14 @@
   <img src="https://img.shields.io/badge/License-MIT-lightgrey" />
 </p>
 
+<h4 align="center"><br/><br/>Get the latest StreamView app apk from below 👇</h4>
+<p align="center">
+  <a href="https://github.com/Farhandroid/StreamView/releases/download/v1.0.0/StreamView.apk">
+    <img src="https://img.shields.io/badge/StreamView-APK-blue" alt="StreamView APK" />
+  </a>
+</p>
+
+
 ---
 
 ## About
