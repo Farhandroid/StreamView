@@ -1,0 +1,89 @@
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+release/
+
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Local configuration (SDK path, etc.)
+local.properties
+
+# Android Studio / IntelliJ
+*.iml
+.idea/
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+!.idea/runConfigurations/
+*.ipr
+*.iws
+
+# Native / NDK
+.externalNativeBuild/
+.cxx/
+obj/
+
+# Captures / profiling
+captures/
+
+# Kotlin
+.kotlin/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+
+# Signing / secrets
+*.jks
+*.keystore
+*.pem
+google-services.json
+keystore.properties
+secrets.properties
+*.key
+
+# Logs & misc
+*.log
+*.hprof
+*.swp
+*~
+
+# Test / coverage
+.navigation/
+test-results/
+**/jacoco/
+**/coverage/
+*.exec
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Google Services / Play
+play/
+
+# Local planning docs (not for the public repo)
+docs/StreamView_Project_Plan.md
+**/StreamView_Project_Plan*.md
