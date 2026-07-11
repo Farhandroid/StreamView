@@ -22,25 +22,33 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.techegrity.stream_view.core.ui.theme.UiConstants
 import com.techegrity.stream_view.core.ui.thumbnail.FrameResult
 import com.techegrity.stream_view.core.ui.thumbnail.StreamFrameExtractor
 
 /**
- * Spinner only on the first load of a URL. Scroll recycle uses play icon / cached frame.
+ * Prefers a live frame from [streamUrl]. Falls back to [fallbackImageUrl] (no error UI).
+ * Spinner only on the first load of a URL.
  */
 @Composable
 fun StreamThumbnail(
     streamUrl: String,
     contentDescription: String?,
     modifier: Modifier = Modifier,
+    fallbackImageUrl: String = "",
 ) {
     val context = LocalContext.current
     val initial = remember(streamUrl) { StreamFrameExtractor.peek(streamUrl) }
     var bitmap by remember(streamUrl) {
         mutableStateOf((initial as? FrameResult.Ready)?.bitmap)
     }
-    // Spinner only on the very first load of this URL (not when LazyColumn recycles).
+    var useFallback by remember(streamUrl, fallbackImageUrl) {
+        mutableStateOf(
+            initial is FrameResult.Unavailable && fallbackImageUrl.isNotBlank(),
+        )
+    }
     var showSpinner by remember(streamUrl) {
         val firstTime = streamUrl.isNotBlank() &&
             initial == null &&
@@ -51,20 +59,23 @@ fun StreamThumbnail(
         mutableStateOf(firstTime)
     }
 
-    LaunchedEffect(streamUrl) {
+    LaunchedEffect(streamUrl, fallbackImageUrl) {
         if (streamUrl.isBlank()) {
             bitmap = null
+            useFallback = fallbackImageUrl.isNotBlank()
             showSpinner = false
             return@LaunchedEffect
         }
         when (val peeked = StreamFrameExtractor.peek(streamUrl)) {
             is FrameResult.Ready -> {
                 bitmap = peeked.bitmap
+                useFallback = false
                 showSpinner = false
                 return@LaunchedEffect
             }
             FrameResult.Unavailable -> {
                 bitmap = null
+                useFallback = fallbackImageUrl.isNotBlank()
                 showSpinner = false
                 return@LaunchedEffect
             }
@@ -72,8 +83,14 @@ fun StreamThumbnail(
         }
         StreamFrameExtractor.markAttempted(streamUrl)
         when (val result = StreamFrameExtractor.getFrame(context, streamUrl)) {
-            is FrameResult.Ready -> bitmap = result.bitmap
-            FrameResult.Unavailable -> bitmap = null
+            is FrameResult.Ready -> {
+                bitmap = result.bitmap
+                useFallback = false
+            }
+            FrameResult.Unavailable -> {
+                bitmap = null
+                useFallback = fallbackImageUrl.isNotBlank()
+            }
         }
         showSpinner = false
     }
@@ -91,10 +108,21 @@ fun StreamThumbnail(
                     modifier = Modifier.fillMaxSize(),
                 )
             }
+            useFallback -> {
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(fallbackImageUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = contentDescription,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
             showSpinner -> {
                 CircularProgressIndicator(
                     modifier = Modifier.size(28.dp),
-                    strokeWidth = 2.dp,
+                    strokeWidth = UiConstants.THUMBNAIL_SPINNER_STROKE_WIDTH_DP.dp,
                     color = MaterialTheme.colorScheme.primary,
                 )
             }

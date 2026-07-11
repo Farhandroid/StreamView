@@ -2,7 +2,6 @@ package com.techegrity.stream_view.core.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.VideocamOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,16 +34,13 @@ import com.techegrity.stream_view.core.ui.theme.StreamViewSpacing
 import com.techegrity.stream_view.core.ui.theme.StreamViewTheme
 import com.techegrity.stream_view.core.ui.theme.UiConstants
 
-/**
- * @param isConnected Whether the **feed** is available (not thumbnail load state).
- */
 @Composable
 fun StreamCard(
     name: String,
     streamUrl: String,
-    isConnected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    thumbnailUrl: String = "",
     metadata: String? = null,
     onMoreClick: (() -> Unit)? = null,
 ) {
@@ -61,39 +56,11 @@ fun StreamCard(
                 .clip(RoundedCornerShape(StreamViewRadii.Thumbnail))
                 .background(MaterialTheme.colorScheme.surfaceContainerHighest),
         ) {
-            if (isConnected) {
-                StreamThumbnail(
-                    streamUrl = streamUrl,
-                    contentDescription = name,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surfaceContainerHighest),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.VideocamOff,
-                        contentDescription = null,
-                        modifier = Modifier.size(UiConstants.SIGNAL_LOST_ICON_SIZE_DP.dp),
-                        tint = MaterialTheme.colorScheme.outline,
-                    )
-                    Spacer(modifier = Modifier.height(StreamViewSpacing.Sm))
-                    Text(
-                        text = stringResource(R.string.signal_lost),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.outline,
-                    )
-                }
-            }
-            StatusPill(
-                connected = isConnected,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(StreamViewSpacing.Sm),
+            StreamThumbnail(
+                streamUrl = streamUrl,
+                fallbackImageUrl = thumbnailUrl,
+                contentDescription = name,
+                modifier = Modifier.fillMaxSize(),
             )
         }
         Spacer(modifier = Modifier.height(StreamViewSpacing.Sm))
@@ -110,7 +77,7 @@ fun StreamCard(
                     overflow = TextOverflow.Ellipsis,
                 )
                 if (!metadata.isNullOrBlank()) {
-                    Spacer(modifier = Modifier.height(2.dp))
+                    Spacer(modifier = Modifier.height(UiConstants.METADATA_TITLE_GAP_DP.dp))
                     Text(
                         text = metadata,
                         style = MaterialTheme.typography.bodyMedium,
@@ -141,10 +108,9 @@ fun StreamCard(
 private fun StreamCardPreview() {
     StreamViewTheme(darkTheme = true) {
         StreamCard(
-            name = "Mux Big Buck Bunny",
-            streamUrl = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-            isConnected = true,
-            metadata = "Mux • VOD • ABR",
+            name = stringResource(R.string.preview_stream_name),
+            streamUrl = stringResource(R.string.preview_stream_url),
+            metadata = stringResource(R.string.preview_stream_metadata),
             onClick = {},
             modifier = Modifier.padding(StreamViewSpacing.Md),
         )

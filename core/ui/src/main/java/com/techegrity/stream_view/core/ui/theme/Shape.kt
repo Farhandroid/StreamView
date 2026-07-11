@@ -6,7 +6,7 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Rounded strategy: 4 / 8 / 16dp for small / medium / large components.
- * Full radius reserved for StatusPills and search fields.
+ * Full radius reserved for search fields and pill-shaped controls.
  */
 val StreamViewShapes = Shapes(
     extraSmall = RoundedCornerShape(4.dp),

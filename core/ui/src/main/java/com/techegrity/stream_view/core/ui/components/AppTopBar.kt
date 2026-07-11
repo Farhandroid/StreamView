@@ -143,7 +143,7 @@ fun AppTopBar(
 private fun AppTopBarPreview() {
     StreamViewTheme(darkTheme = true) {
         AppTopBar(
-            title = "StreamView",
+            title = stringResource(R.string.preview_app_title),
             onSearchToggle = {},
         )
     }
@@ -154,9 +154,9 @@ private fun AppTopBarPreview() {
 private fun AppTopBarSearchPreview() {
     StreamViewTheme(darkTheme = true) {
         AppTopBar(
-            title = "StreamView",
+            title = stringResource(R.string.preview_app_title),
             searchExpanded = true,
-            searchQuery = "Lobby",
+            searchQuery = stringResource(R.string.preview_search_query),
             onSearchToggle = {},
             onSearchQueryChange = {},
             onSearchClear = {},

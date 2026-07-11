@@ -33,15 +33,14 @@ class MockStreamRepository : StreamRepository {
     }
 
     override suspend fun addStream(name: String, streamUrl: String): Stream {
-        require(name.isNotBlank()) { "Name is required" }
-        require(streamUrl.isNotBlank()) { "Stream URL is required" }
+        require(name.isNotBlank()) { StreamCatalogConstants.VALIDATION_NAME_REQUIRED }
+        require(streamUrl.isNotBlank()) { StreamCatalogConstants.VALIDATION_URL_REQUIRED }
 
         val stream = Stream(
-            id = "user-${UUID.randomUUID()}",
+            id = "${StreamCatalogConstants.USER_STREAM_ID_PREFIX}${UUID.randomUUID()}",
             name = name,
             thumbnailUrl = "",
             streamUrl = streamUrl,
-            isConnected = true,
             provider = StreamCatalogConstants.PROVIDER_USER,
             metadata = StreamCatalogConstants.META_USER_ADDED,
         )

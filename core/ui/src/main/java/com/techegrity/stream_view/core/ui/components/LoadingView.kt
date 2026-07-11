@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.techegrity.stream_view.core.ui.theme.StreamViewRadii
 import com.techegrity.stream_view.core.ui.theme.StreamViewSpacing
 import com.techegrity.stream_view.core.ui.theme.StreamViewTheme
+import com.techegrity.stream_view.core.ui.theme.UiConstants
 
 @Composable
 fun LoadingView(
@@ -51,7 +52,7 @@ fun LoadingView(
                 .padding(horizontal = StreamViewSpacing.MarginMobile),
             verticalArrangement = Arrangement.spacedBy(StreamViewSpacing.Md),
         ) {
-            repeat(3) {
+            repeat(UiConstants.SHIMMER_PLACEHOLDER_COUNT) {
                 ShimmerStreamCardPlaceholder()
             }
         }
@@ -64,10 +65,13 @@ fun ShimmerStreamCardPlaceholder(
 ) {
     val transition = rememberInfiniteTransition(label = "shimmer")
     val shimmerX by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1000f,
+        initialValue = UiConstants.SHIMMER_START,
+        targetValue = UiConstants.SHIMMER_END,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 2000, easing = LinearEasing),
+            animation = tween(
+                durationMillis = UiConstants.SHIMMER_DURATION_MS,
+                easing = LinearEasing,
+            ),
             repeatMode = RepeatMode.Restart,
         ),
         label = "shimmerX",
@@ -77,15 +81,15 @@ fun ShimmerStreamCardPlaceholder(
     val highlight = MaterialTheme.colorScheme.surfaceContainerHighest
     val brush = Brush.linearGradient(
         colors = listOf(base, highlight, base),
-        start = Offset(shimmerX - 200f, 0f),
-        end = Offset(shimmerX, 200f),
+        start = Offset(shimmerX - UiConstants.SHIMMER_BAND_WIDTH, UiConstants.SHIMMER_START),
+        end = Offset(shimmerX, UiConstants.SHIMMER_BAND_WIDTH),
     )
 
     Column(modifier = modifier.fillMaxWidth()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(16f / 9f)
+                .aspectRatio(UiConstants.STREAM_THUMBNAIL_ASPECT_RATIO)
                 .clip(RoundedCornerShape(StreamViewRadii.Card))
                 .background(brush),
         )
