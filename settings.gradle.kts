@@ -25,3 +25,7 @@ dependencyResolutionManagement {
 rootProject.name = "StreamView"
 include(":app")
 include(":core:ui")
+include(":core:common")
+include(":domain")
+include(":data")
+include(":feature:list")

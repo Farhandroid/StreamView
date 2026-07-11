@@ -16,13 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.techegrity.stream_view.core.ui.R
 import com.techegrity.stream_view.core.ui.theme.StatusConnected
 import com.techegrity.stream_view.core.ui.theme.StatusDisconnected
 import com.techegrity.stream_view.core.ui.theme.StreamViewRadii
 import com.techegrity.stream_view.core.ui.theme.StreamViewSpacing
 import com.techegrity.stream_view.core.ui.theme.StreamViewTheme
+import com.techegrity.stream_view.core.ui.theme.UiConstants
 
 @Composable
 fun StatusPill(
@@ -30,20 +33,22 @@ fun StatusPill(
     modifier: Modifier = Modifier,
 ) {
     val indicatorColor = if (connected) StatusConnected else StatusDisconnected
-    val label = if (connected) "Connected" else "Disconnected"
+    val label = stringResource(
+        if (connected) R.string.status_connected else R.string.status_disconnected,
+    )
 
     Row(
         modifier = modifier
-            .height(24.dp)
+            .height(UiConstants.STATUS_PILL_HEIGHT_DP.dp)
             .clip(RoundedCornerShape(StreamViewRadii.Pill))
-            .background(Color.Black.copy(alpha = 0.6f))
+            .background(Color.Black.copy(alpha = UiConstants.STATUS_PILL_SCRIM_ALPHA))
             .padding(horizontal = StreamViewSpacing.Sm),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(StreamViewSpacing.Xs),
     ) {
         Box(
             modifier = Modifier
-                .size(8.dp)
+                .size(UiConstants.STATUS_DOT_SIZE_DP.dp)
                 .clip(CircleShape)
                 .background(indicatorColor),
         )

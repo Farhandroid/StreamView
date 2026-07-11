@@ -25,21 +25,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import com.techegrity.stream_view.core.ui.R
 import com.techegrity.stream_view.core.ui.theme.StreamViewRadii
 import com.techegrity.stream_view.core.ui.theme.StreamViewSpacing
 import com.techegrity.stream_view.core.ui.theme.StreamViewTheme
+import com.techegrity.stream_view.core.ui.theme.UiConstants
 
+/**
+ * @param isConnected Whether the **feed** is available (not thumbnail load state).
+ */
 @Composable
 fun StreamCard(
     name: String,
-    thumbnailUrl: String,
+    streamUrl: String,
     isConnected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -54,18 +57,14 @@ fun StreamCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(16f / 9f)
+                .aspectRatio(UiConstants.STREAM_THUMBNAIL_ASPECT_RATIO)
                 .clip(RoundedCornerShape(StreamViewRadii.Thumbnail))
                 .background(MaterialTheme.colorScheme.surfaceContainerHighest),
         ) {
-            if (isConnected && thumbnailUrl.isNotBlank()) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(thumbnailUrl)
-                        .crossfade(true)
-                        .build(),
+            if (isConnected) {
+                StreamThumbnail(
+                    streamUrl = streamUrl,
                     contentDescription = name,
-                    contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
                 )
             } else {
@@ -79,12 +78,12 @@ fun StreamCard(
                     Icon(
                         imageVector = Icons.Outlined.VideocamOff,
                         contentDescription = null,
-                        modifier = Modifier.size(48.dp),
+                        modifier = Modifier.size(UiConstants.SIGNAL_LOST_ICON_SIZE_DP.dp),
                         tint = MaterialTheme.colorScheme.outline,
                     )
                     Spacer(modifier = Modifier.height(StreamViewSpacing.Sm))
                     Text(
-                        text = "Signal Lost",
+                        text = stringResource(R.string.signal_lost),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.outline,
                     )
@@ -107,13 +106,17 @@ fun StreamCard(
                     text = name,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
-                if (metadata != null) {
+                if (!metadata.isNullOrBlank()) {
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = metadata,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
@@ -124,7 +127,7 @@ fun StreamCard(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.MoreVert,
-                        contentDescription = "More options",
+                        contentDescription = stringResource(R.string.cd_more_options),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -138,28 +141,11 @@ fun StreamCard(
 private fun StreamCardPreview() {
     StreamViewTheme(darkTheme = true) {
         StreamCard(
-            name = "Front Entrance",
-            thumbnailUrl = "",
+            name = "Mux Big Buck Bunny",
+            streamUrl = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
             isConnected = true,
+            metadata = "Mux • VOD • ABR",
             onClick = {},
-            onMoreClick = {},
-            metadata = "1080p • 60fps • Cam 01",
-            modifier = Modifier.padding(StreamViewSpacing.Md),
-        )
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF131313)
-@Composable
-private fun StreamCardDisconnectedPreview() {
-    StreamViewTheme(darkTheme = true) {
-        StreamCard(
-            name = "West Gate",
-            thumbnailUrl = "",
-            isConnected = false,
-            onClick = {},
-            onMoreClick = {},
-            metadata = "Retry in 12s • Cam 09",
             modifier = Modifier.padding(StreamViewSpacing.Md),
         )
     }

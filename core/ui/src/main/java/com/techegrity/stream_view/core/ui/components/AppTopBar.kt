@@ -23,12 +23,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.techegrity.stream_view.core.ui.R
 import com.techegrity.stream_view.core.ui.theme.StreamViewRadii
 import com.techegrity.stream_view.core.ui.theme.StreamViewSpacing
 import com.techegrity.stream_view.core.ui.theme.StreamViewTheme
+import com.techegrity.stream_view.core.ui.theme.UiConstants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,10 +46,15 @@ fun AppTopBar(
     onSearchClear: () -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
-    val mutedStroke = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)
+    val mutedStroke = MaterialTheme.colorScheme.outlineVariant.copy(
+        alpha = UiConstants.OUTLINE_STROKE_ALPHA,
+    )
 
     TopAppBar(
-        modifier = modifier.border(width = 1.dp, color = mutedStroke),
+        modifier = modifier.border(
+            width = UiConstants.TOP_BAR_BORDER_WIDTH_DP.dp,
+            color = mutedStroke,
+        ),
         title = {
             if (searchExpanded && onSearchToggle != null) {
                 TextField(
@@ -58,7 +66,7 @@ fun AppTopBar(
                     singleLine = true,
                     placeholder = {
                         Text(
-                            text = "Search streams",
+                            text = stringResource(R.string.search_streams_hint),
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     },
@@ -67,7 +75,7 @@ fun AppTopBar(
                             IconButton(onClick = onSearchClear) {
                                 Icon(
                                     imageVector = Icons.Outlined.Clear,
-                                    contentDescription = "Clear search",
+                                    contentDescription = stringResource(R.string.cd_clear_search),
                                 )
                             }
                         }
@@ -100,7 +108,7 @@ fun AppTopBar(
                 IconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                        contentDescription = "Back",
+                        contentDescription = stringResource(R.string.cd_back),
                     )
                 }
             }
@@ -114,7 +122,9 @@ fun AppTopBar(
                         } else {
                             Icons.Outlined.Search
                         },
-                        contentDescription = if (searchExpanded) "Close search" else "Search",
+                        contentDescription = stringResource(
+                            if (searchExpanded) R.string.cd_close_search else R.string.cd_search,
+                        ),
                     )
                 }
             }

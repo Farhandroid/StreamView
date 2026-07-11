@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cd_back">Back</string>
+    <string name="cd_search">Search</string>
+    <string name="cd_close_search">Close search</string>
+    <string name="cd_clear_search">Clear search</string>
+    <string name="cd_more_options">More options</string>
+    <string name="cd_add_stream">Add stream</string>
+    <string name="search_streams_hint">Search streams</string>
+    <string name="status_connected">Connected</string>
+    <string name="status_disconnected">Disconnected</string>
+    <string name="signal_lost">Signal Lost</string>
+    <string name="action_retry">Retry</string>
+    <string name="preview_error_load_streams">Couldn\'t load streams</string>
+    <string name="preview_empty_title">No streams found</string>
+    <string name="preview_empty_message">Try a different search term.</string>
+</resources>
