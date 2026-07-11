@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="stream_list_title">StreamView</string>
+    <string name="stream_list_header">Public Streams</string>
+    <string name="stream_list_subtitle">%1$d streams with HLS URLs</string>
+    <string name="stream_list_empty_title">No streams found</string>
+    <string name="stream_list_empty_no_data">No streams with a URL available.</string>
+    <string name="stream_list_empty_no_results">Try a different search term.</string>
+    <string name="stream_list_load_error">Couldn\'t load streams</string>
+    <string name="stream_metadata_format">%1$s • %2$s</string>
+    <string name="add_stream_title">Add stream URL</string>
+    <string name="add_stream_name_label">Name</string>
+    <string name="add_stream_url_label">HLS URL</string>
+    <string name="add_stream_url_hint">https://…/master.m3u8</string>
+    <string name="add_stream_confirm">Add</string>
+    <string name="add_stream_cancel">Cancel</string>
+    <string name="add_stream_validation_error">Enter a name and stream URL.</string>
+    <string name="add_stream_failed">Couldn\'t add stream</string>
+</resources>

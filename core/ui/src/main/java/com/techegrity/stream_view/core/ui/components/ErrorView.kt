@@ -16,18 +16,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.techegrity.stream_view.core.ui.R
 import com.techegrity.stream_view.core.ui.theme.StreamViewSpacing
 import com.techegrity.stream_view.core.ui.theme.StreamViewTheme
+import com.techegrity.stream_view.core.ui.theme.UiConstants
 
 @Composable
 fun ErrorView(
     message: String,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
-    retryLabel: String = "Retry",
+    retryLabel: String = stringResource(R.string.action_retry),
 ) {
     Column(
         modifier = modifier
@@ -39,7 +42,7 @@ fun ErrorView(
         Icon(
             imageVector = Icons.Outlined.ErrorOutline,
             contentDescription = null,
-            modifier = Modifier.size(48.dp),
+            modifier = Modifier.size(UiConstants.ERROR_ICON_SIZE_DP.dp),
             tint = MaterialTheme.colorScheme.error,
         )
         Spacer(modifier = Modifier.height(StreamViewSpacing.Md))
@@ -61,7 +64,7 @@ fun ErrorView(
 private fun ErrorViewPreview() {
     StreamViewTheme(darkTheme = true) {
         ErrorView(
-            message = "Couldn't load streams",
+            message = stringResource(R.string.preview_error_load_streams),
             onRetry = {},
         )
     }

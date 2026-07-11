@@ -2,7 +2,6 @@ package com.techegrity.stream_view.core.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.VideocamOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -25,24 +23,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import com.techegrity.stream_view.core.ui.R
 import com.techegrity.stream_view.core.ui.theme.StreamViewRadii
 import com.techegrity.stream_view.core.ui.theme.StreamViewSpacing
 import com.techegrity.stream_view.core.ui.theme.StreamViewTheme
+import com.techegrity.stream_view.core.ui.theme.UiConstants
 
 @Composable
 fun StreamCard(
     name: String,
-    thumbnailUrl: String,
-    isConnected: Boolean,
+    streamUrl: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    thumbnailUrl: String = "",
     metadata: String? = null,
     onMoreClick: (() -> Unit)? = null,
 ) {
@@ -54,47 +52,15 @@ fun StreamCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(16f / 9f)
+                .aspectRatio(UiConstants.STREAM_THUMBNAIL_ASPECT_RATIO)
                 .clip(RoundedCornerShape(StreamViewRadii.Thumbnail))
                 .background(MaterialTheme.colorScheme.surfaceContainerHighest),
         ) {
-            if (isConnected && thumbnailUrl.isNotBlank()) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(thumbnailUrl)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = name,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surfaceContainerHighest),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.VideocamOff,
-                        contentDescription = null,
-                        modifier = Modifier.size(48.dp),
-                        tint = MaterialTheme.colorScheme.outline,
-                    )
-                    Spacer(modifier = Modifier.height(StreamViewSpacing.Sm))
-                    Text(
-                        text = "Signal Lost",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.outline,
-                    )
-                }
-            }
-            StatusPill(
-                connected = isConnected,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(StreamViewSpacing.Sm),
+            StreamThumbnail(
+                streamUrl = streamUrl,
+                fallbackImageUrl = thumbnailUrl,
+                contentDescription = name,
+                modifier = Modifier.fillMaxSize(),
             )
         }
         Spacer(modifier = Modifier.height(StreamViewSpacing.Sm))
@@ -107,13 +73,17 @@ fun StreamCard(
                     text = name,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
-                if (metadata != null) {
-                    Spacer(modifier = Modifier.height(2.dp))
+                if (!metadata.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.height(UiConstants.METADATA_TITLE_GAP_DP.dp))
                     Text(
                         text = metadata,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
@@ -124,7 +94,7 @@ fun StreamCard(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.MoreVert,
-                        contentDescription = "More options",
+                        contentDescription = stringResource(R.string.cd_more_options),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -138,28 +108,10 @@ fun StreamCard(
 private fun StreamCardPreview() {
     StreamViewTheme(darkTheme = true) {
         StreamCard(
-            name = "Front Entrance",
-            thumbnailUrl = "",
-            isConnected = true,
+            name = stringResource(R.string.preview_stream_name),
+            streamUrl = stringResource(R.string.preview_stream_url),
+            metadata = stringResource(R.string.preview_stream_metadata),
             onClick = {},
-            onMoreClick = {},
-            metadata = "1080p • 60fps • Cam 01",
-            modifier = Modifier.padding(StreamViewSpacing.Md),
-        )
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF131313)
-@Composable
-private fun StreamCardDisconnectedPreview() {
-    StreamViewTheme(darkTheme = true) {
-        StreamCard(
-            name = "West Gate",
-            thumbnailUrl = "",
-            isConnected = false,
-            onClick = {},
-            onMoreClick = {},
-            metadata = "Retry in 12s • Cam 09",
             modifier = Modifier.padding(StreamViewSpacing.Md),
         )
     }

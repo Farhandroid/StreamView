@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="player_back">Back</string>
+    <string name="player_play">Play</string>
+    <string name="player_pause">Pause</string>
+    <string name="player_volume">Volume</string>
+    <string name="player_fullscreen">Fullscreen</string>
+    <string name="player_skip_next">Next stream</string>
+    <string name="player_live">LIVE</string>
+    <string name="player_time_separator">/</string>
+    <string name="player_time_zero">00:00</string>
+    <string name="player_time_hms">%1$d:%2$02d:%3$02d</string>
+    <string name="player_time_ms">%1$02d:%2$02d</string>
+    <string name="player_time_range">%1$s %2$s %3$s</string>
+    <string name="player_metadata_format">%1$s • %2$s</string>
+    <string name="player_stream_not_found">Stream not found</string>
+    <string name="player_playback_error">Unable to play this stream</string>
+    <string name="player_missing_stream_id">streamId is required</string>
+</resources>
