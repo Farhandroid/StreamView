@@ -17,6 +17,7 @@ object UiConstants {
     const val PLAYER_SCRUBBER_SIZE_DP = 16
     const val PLAYER_CENTER_BUTTON_SIZE_DP = 80
     const val PLAYER_CENTER_ICON_SIZE_DP = 48
+    const val PLAYER_CENTER_BORDER_WIDTH_DP = 2
     const val PLAYER_CONTROL_ICON_SIZE_DP = 28
     const val PLAYER_PLAY_ICON_SIZE_DP = 32
     const val PLAYER_BACK_ICON_SIZE_DP = 28
