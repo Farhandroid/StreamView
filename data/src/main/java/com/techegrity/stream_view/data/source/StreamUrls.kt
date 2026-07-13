@@ -33,4 +33,20 @@ object StreamUrls {
     /** Official NASA image used when the public NASA TV HLS variants are offline. */
     const val NASA_TV_THUMBNAIL =
         "https://images-assets.nasa.gov/image/NHQ201905310019/NHQ201905310019~medium.jpg"
+
+    // Static poster fallbacks shown when live-frame capture fails (dead/slow feeds).
+    /** Mux image service thumbnail generated from the sample stream itself. */
+    const val MUX_SAMPLE_THUMBNAIL =
+        "https://image.mux.com/v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM/thumbnail.jpg?width=640"
+    /** Big Buck Bunny poster (Blender Foundation, via Wikimedia Commons). */
+    const val MUX_BBB_THUMBNAIL =
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Big_buck_bunny_poster_big.jpg/960px-Big_buck_bunny_poster_big.jpg"
+    /** Sintel poster (Blender Foundation, via Wikimedia Commons). */
+    const val BITMOVIN_SINTEL_THUMBNAIL =
+        "https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg"
+    /** Tears of Steel still (official Blender Mango project site). */
+    const val UNIFIED_TOS_THUMBNAIL =
+        "https://mango.blender.org/wp-content/uploads/2013/05/01_thom_celia_bridge.jpg"
+    /** JW Player CDN poster generated from the sample media id. */
+    const val JW_SAMPLE_THUMBNAIL = "https://content.jwplatform.com/thumbs/vM7nH0Kl-720.jpg"
 }

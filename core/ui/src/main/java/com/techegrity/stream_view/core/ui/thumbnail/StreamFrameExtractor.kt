@@ -2,11 +2,18 @@ package com.techegrity.stream_view.core.ui.thumbnail
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
+import android.hardware.HardwareBuffer
+import android.media.Image
+import android.media.ImageReader
+import android.os.Build
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.Looper
 import android.view.PixelCopy
 import android.view.Surface
+import androidx.annotation.RequiresApi
 import com.techegrity.stream_view.core.ui.theme.UiConstants
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
@@ -43,16 +50,25 @@ object StreamFrameExtractor {
     private const val BLACK_LUMA_THRESHOLD = 18
     private const val BLACK_RATIO_THRESHOLD = 0.92f
     private const val MAX_CACHE_SIZE = 32
+    private const val IMAGE_READER_MAX_IMAGES = 3
+    private const val FAILURE_RETRY_MS = 45_000L
+    private const val MAX_URL_ATTEMPTS = 3
 
-    private val results = ConcurrentHashMap<String, FrameResult>()
+    private data class FailureRecord(val atMillis: Long, val count: Int)
+
+    private val results = ConcurrentHashMap<String, FrameResult.Ready>()
+    private val failures = ConcurrentHashMap<String, FailureRecord>()
     private val inFlight = ConcurrentHashMap<String, CompletableDeferred<FrameResult>>()
     private val attempted = ConcurrentHashMap.newKeySet<String>()
     private val captureSlots = Semaphore(MAX_PARALLEL_CAPTURES)
     private val mainHandler = Handler(Looper.getMainLooper())
+    private val imageHandler: Handler by lazy {
+        Handler(HandlerThread("StreamFrameReader").apply { start() }.looper)
+    }
 
     fun peek(url: String): FrameResult? {
         if (url.isBlank()) return FrameResult.Unavailable
-        return results[url]
+        return cached(url)
     }
 
     fun hasAttempted(url: String): Boolean =
@@ -65,17 +81,16 @@ object StreamFrameExtractor {
     suspend fun getFrame(context: Context, streamUrl: String): FrameResult {
         if (streamUrl.isBlank()) return FrameResult.Unavailable
         markAttempted(streamUrl)
-        results[streamUrl]?.let { return it }
 
         while (true) {
-            results[streamUrl]?.let { return it }
+            cached(streamUrl)?.let { return it }
 
             val existingJob = inFlight[streamUrl]
             if (existingJob != null) {
                 return try {
                     existingJob.await()
                 } catch (_: kotlinx.coroutines.CancellationException) {
-                    results[streamUrl] ?: continue
+                    cached(streamUrl) ?: continue
                 }
             }
 
@@ -85,7 +100,7 @@ object StreamFrameExtractor {
                 return try {
                     winner.await()
                 } catch (_: kotlinx.coroutines.CancellationException) {
-                    results[streamUrl] ?: continue
+                    cached(streamUrl) ?: continue
                 }
             }
 
@@ -97,12 +112,15 @@ object StreamFrameExtractor {
                 }
                 val result = if (frame != null && !frame.isMostlyBlack()) {
                     trimCacheIfNeeded()
-                    FrameResult.Ready(frame)
+                    val ready = FrameResult.Ready(frame)
+                    results[streamUrl] = ready
+                    failures.remove(streamUrl)
+                    ready
                 } else {
                     frame?.recycle()
+                    recordFailure(streamUrl)
                     FrameResult.Unavailable
                 }
-                results[streamUrl] = result
                 deferred.complete(result)
                 result
             } catch (cancelled: kotlinx.coroutines.CancellationException) {
@@ -111,47 +129,154 @@ object StreamFrameExtractor {
                 }
                 throw cancelled
             } catch (_: Throwable) {
-                val result = FrameResult.Unavailable
-                results[streamUrl] = result
-                deferred.complete(result)
-                result
+                recordFailure(streamUrl)
+                deferred.complete(FrameResult.Unavailable)
+                FrameResult.Unavailable
             } finally {
                 inFlight.remove(streamUrl, deferred)
             }
         }
     }
 
+    /**
+     * Ready frames are cached for the session. Failures are cached only for
+     * [FAILURE_RETRY_MS] (returning null afterwards so callers retry), up to
+     * [MAX_URL_ATTEMPTS] attempts per URL, after which the failure sticks.
+     */
+    private fun cached(url: String): FrameResult? {
+        results[url]?.let { return it }
+        val failure = failures[url] ?: return null
+        if (failure.count >= MAX_URL_ATTEMPTS) return FrameResult.Unavailable
+        val fresh = System.currentTimeMillis() - failure.atMillis < FAILURE_RETRY_MS
+        return if (fresh) FrameResult.Unavailable else null
+    }
+
+    private fun recordFailure(url: String) {
+        failures.compute(url) { _, previous ->
+            FailureRecord(System.currentTimeMillis(), (previous?.count ?: 0) + 1)
+        }
+    }
+
     private fun trimCacheIfNeeded() {
         if (results.size <= MAX_CACHE_SIZE) return
-        val readyKeys = results.entries
-            .filter { it.value is FrameResult.Ready }
-            .map { it.key }
+        val readyKeys = results.keys.toList()
         readyKeys.take((readyKeys.size - MAX_CACHE_SIZE / 2).coerceAtLeast(0)).forEach { key ->
-            val removed = results.remove(key)
-            (removed as? FrameResult.Ready)?.bitmap?.recycle()
+            results.remove(key)?.bitmap?.recycle()
         }
     }
 
     private suspend fun captureWithExoPlayer(
         context: Context,
         streamUrl: String,
-    ): Bitmap? = withContext(Dispatchers.Main) {
-        val firstFrame = CompletableDeferred<Unit>()
-        val playbackError = CompletableDeferred<Unit>()
+    ): Bitmap? =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            captureViaImageReader(context, streamUrl)
+        } else {
+            captureViaPixelCopy(context, streamUrl)
+        }
 
+    private fun buildPlayer(context: Context): ExoPlayer {
         val trackSelector = DefaultTrackSelector(context).apply {
             parameters = buildUponParameters()
                 .setMaxVideoBitrate(MAX_VIDEO_BITRATE)
                 .setForceHighestSupportedBitrate(false)
                 .build()
         }
+        return ExoPlayer.Builder(context)
+            .setTrackSelector(trackSelector)
+            .build()
+    }
+
+    /**
+     * Decodes into an [ImageReader] surface and reads frames directly — unlike
+     * [PixelCopy] over an unconsumed [SurfaceTexture], every decoded frame is
+     * delivered to us, so capture does not depend on device copy quirks.
+     * Waits until a non-black frame arrives or the caller times out.
+     */
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private suspend fun captureViaImageReader(
+        context: Context,
+        streamUrl: String,
+    ): Bitmap? = withContext(Dispatchers.Main) {
+        val goodFrame = CompletableDeferred<Bitmap?>()
+        val imageReader = ImageReader.newInstance(
+            WIDTH,
+            HEIGHT,
+            PixelFormat.RGBA_8888,
+            IMAGE_READER_MAX_IMAGES,
+            HardwareBuffer.USAGE_CPU_READ_OFTEN or HardwareBuffer.USAGE_GPU_SAMPLED_IMAGE,
+        )
+        imageReader.setOnImageAvailableListener({ reader ->
+            val image = runCatching { reader.acquireLatestImage() }.getOrNull()
+                ?: return@setOnImageAvailableListener
+            val bitmap = runCatching { image.toBitmap() }.getOrNull()
+            runCatching { image.close() }
+            if (bitmap == null) return@setOnImageAvailableListener
+            if (!bitmap.isMostlyBlack()) {
+                if (!goodFrame.complete(bitmap)) bitmap.recycle()
+            } else {
+                bitmap.recycle()
+            }
+        }, imageHandler)
+
+        val player = buildPlayer(context)
+        val listener = object : Player.Listener {
+            override fun onPlayerError(error: PlaybackException) {
+                goodFrame.complete(null)
+            }
+        }
+
+        try {
+            player.addListener(listener)
+            player.setVideoSurface(imageReader.surface)
+            player.setMediaItem(MediaItem.fromUri(streamUrl))
+            player.volume = UiConstants.VOLUME_MUTED
+            player.playWhenReady = true
+            player.prepare()
+
+            withTimeoutOrNull(TIMEOUT_MS) { goodFrame.await() }
+        } catch (cancelled: kotlinx.coroutines.CancellationException) {
+            throw cancelled
+        } catch (_: Throwable) {
+            null
+        } finally {
+            goodFrame.complete(null)
+            runCatching { player.removeListener(listener) }
+            runCatching { player.setVideoSurface(null) }
+            runCatching { player.release() }
+            runCatching { imageReader.close() }
+        }
+    }
+
+    /** RGBA_8888 [Image] to [Bitmap], honoring row-stride padding. */
+    private fun Image.toBitmap(): Bitmap? {
+        val plane = planes.firstOrNull() ?: return null
+        val pixelStride = plane.pixelStride
+        val rowStride = plane.rowStride
+        if (pixelStride <= 0 || rowStride <= 0) return null
+        val paddedWidth = rowStride / pixelStride
+        if (paddedWidth <= 0 || height <= 0) return null
+        val padded = Bitmap.createBitmap(paddedWidth, height, Bitmap.Config.ARGB_8888)
+        padded.copyPixelsFromBuffer(plane.buffer)
+        if (paddedWidth == width) return padded
+        val cropped = Bitmap.createBitmap(padded, 0, 0, width, height)
+        padded.recycle()
+        return cropped
+    }
+
+    /** Legacy path for API < 29: offscreen SurfaceTexture + PixelCopy. */
+    private suspend fun captureViaPixelCopy(
+        context: Context,
+        streamUrl: String,
+    ): Bitmap? = withContext(Dispatchers.Main) {
+        val firstFrame = CompletableDeferred<Unit>()
+        val playbackError = CompletableDeferred<Unit>()
+
         val surfaceTexture = SurfaceTexture(/* texName = */ 0).apply {
             setDefaultBufferSize(WIDTH, HEIGHT)
         }
         val surface = Surface(surfaceTexture)
-        val player = ExoPlayer.Builder(context)
-            .setTrackSelector(trackSelector)
-            .build()
+        val player = buildPlayer(context)
 
         fun cleanup() {
             runCatching { player.release() }
