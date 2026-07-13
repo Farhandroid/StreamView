@@ -13,7 +13,7 @@ object PublicStreamCatalog {
         Stream(
             id = StreamCatalogConstants.ID_MUX_BBB,
             name = StreamCatalogConstants.NAME_MUX_BBB,
-            thumbnailUrl = "",
+            thumbnailUrl = StreamUrls.MUX_BBB_THUMBNAIL,
             streamUrl = StreamUrls.MUX_BBB,
             provider = StreamCatalogConstants.PROVIDER_MUX,
             metadata = StreamCatalogConstants.META_VOD_ABR_1080,
@@ -37,7 +37,7 @@ object PublicStreamCatalog {
         Stream(
             id = StreamCatalogConstants.ID_MUX_SAMPLE,
             name = StreamCatalogConstants.NAME_MUX_SAMPLE,
-            thumbnailUrl = "",
+            thumbnailUrl = StreamUrls.MUX_SAMPLE_THUMBNAIL,
             streamUrl = StreamUrls.MUX_SAMPLE,
             provider = StreamCatalogConstants.PROVIDER_MUX,
             metadata = StreamCatalogConstants.META_VOD_HLS,
@@ -95,7 +95,7 @@ object PublicStreamCatalog {
         Stream(
             id = StreamCatalogConstants.ID_BITMOVIN_SINTEL,
             name = StreamCatalogConstants.NAME_BITMOVIN_SINTEL,
-            thumbnailUrl = "",
+            thumbnailUrl = StreamUrls.BITMOVIN_SINTEL_THUMBNAIL,
             streamUrl = StreamUrls.BITMOVIN_SINTEL,
             provider = StreamCatalogConstants.PROVIDER_BITMOVIN,
             metadata = StreamCatalogConstants.META_VOD_ABR,
@@ -103,7 +103,7 @@ object PublicStreamCatalog {
         Stream(
             id = StreamCatalogConstants.ID_UNIFIED_TOS,
             name = StreamCatalogConstants.NAME_UNIFIED_TOS,
-            thumbnailUrl = "",
+            thumbnailUrl = StreamUrls.UNIFIED_TOS_THUMBNAIL,
             streamUrl = StreamUrls.UNIFIED_TEARS_OF_STEEL,
             provider = StreamCatalogConstants.PROVIDER_UNIFIED,
             metadata = StreamCatalogConstants.META_VOD_HLS,
@@ -111,7 +111,7 @@ object PublicStreamCatalog {
         Stream(
             id = StreamCatalogConstants.ID_JW_SAMPLE,
             name = StreamCatalogConstants.NAME_JW_SAMPLE,
-            thumbnailUrl = "",
+            thumbnailUrl = StreamUrls.JW_SAMPLE_THUMBNAIL,
             streamUrl = StreamUrls.JW_SAMPLE,
             provider = StreamCatalogConstants.PROVIDER_JW,
             metadata = StreamCatalogConstants.META_VOD_HLS,
