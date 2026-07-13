@@ -13,7 +13,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class MockStreamRepository : StreamRepository {
+/**
+ * In-memory [StreamRepository] seeded from [PublicStreamCatalog], plus session-only user adds.
+ * Not a test double — this is the demo app's real data source until a remote backend exists.
+ */
+class SeedStreamRepository : StreamRepository {
 
     private val mutex = Mutex()
     private val _streams = MutableStateFlow(
