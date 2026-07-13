@@ -110,7 +110,7 @@ internal fun PlayerBottomControls(
                         contentDescription = stringResource(
                             if (state.isPlaying) R.string.player_pause else R.string.player_play,
                         ),
-                        tint = MaterialTheme.colorScheme.onSurface,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(UiConstants.PLAYER_PLAY_ICON_SIZE_DP.dp),
                     )
                 }
@@ -122,9 +122,9 @@ internal fun PlayerBottomControls(
                         imageVector = Icons.Outlined.SkipNext,
                         contentDescription = stringResource(R.string.player_skip_next),
                         tint = if (state.hasNext) {
-                            MaterialTheme.colorScheme.onSurface
+                            MaterialTheme.colorScheme.primary
                         } else {
-                            MaterialTheme.colorScheme.onSurface.copy(
+                            MaterialTheme.colorScheme.primary.copy(
                                 alpha = UiConstants.PLAYER_DISABLED_ICON_ALPHA,
                             )
                         },
@@ -140,7 +140,7 @@ internal fun PlayerBottomControls(
                                 Icons.AutoMirrored.Outlined.VolumeUp
                             },
                             contentDescription = stringResource(R.string.player_volume),
-                            tint = MaterialTheme.colorScheme.onSurface,
+                            tint = MaterialTheme.colorScheme.primary,
                         )
                     }
                     AnimatedVisibility(visible = volumeExpanded) {
@@ -193,7 +193,7 @@ internal fun PlayerBottomControls(
                             Icons.Outlined.Fullscreen
                         },
                         contentDescription = stringResource(R.string.player_fullscreen),
-                        tint = MaterialTheme.colorScheme.onSurface,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(UiConstants.PLAYER_CONTROL_ICON_SIZE_DP.dp),
                     )
                 }

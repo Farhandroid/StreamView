@@ -2,7 +2,7 @@ package com.techegrity.stream_view.di
 
 import com.techegrity.stream_view.core.common.dispatchers.DefaultDispatcherProvider
 import com.techegrity.stream_view.core.common.dispatchers.DispatcherProvider
-import com.techegrity.stream_view.data.repository.MockStreamRepository
+import com.techegrity.stream_view.data.repository.SeedStreamRepository
 import com.techegrity.stream_view.domain.repository.StreamRepository
 import com.techegrity.stream_view.domain.usecase.AddStreamUseCase
 import com.techegrity.stream_view.domain.usecase.GetStreamByIdUseCase
@@ -24,7 +24,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideStreamRepository(): StreamRepository = MockStreamRepository()
+    fun provideStreamRepository(): StreamRepository = SeedStreamRepository()
 
     @Provides
     @Singleton

@@ -131,7 +131,7 @@ fun StreamThumbnail(
                     imageVector = Icons.Outlined.PlayCircle,
                     contentDescription = contentDescription,
                     modifier = Modifier.size(UiConstants.SIGNAL_LOST_ICON_SIZE_DP.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
         }
